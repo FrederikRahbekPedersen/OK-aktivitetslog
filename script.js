@@ -53,15 +53,28 @@ function selectLog(id) {
     const log = logs[id];
     if (!log) return;
 
-    document.getElementById("detail-source").textContent = log.sourceSystem;
+    const sourceLink = document.getElementById("detail-source");
+    const linkToSystem = log.links?.linkToSystem;
+
+    sourceLink.textContent = log.sourceSystem || "—";
+    if (linkToSystem) {
+        sourceLink.href = linkToSystem;
+        sourceLink.target = "_blank";
+        sourceLink.rel = "noopener noreferrer";
+        sourceLink.removeAttribute("aria-disabled");
+    } else {
+        sourceLink.href = "#";
+        sourceLink.removeAttribute("target");
+        sourceLink.removeAttribute("rel");
+        sourceLink.setAttribute("aria-disabled", "true");
+    }
+
     document.getElementById("detail-type").textContent = log.type;
     document.getElementById("detail-channel").textContent = log.channel;
     document.getElementById("detail-product").textContent = log.productArea;
 
     document.getElementById("detail-summary").textContent = log.content.summary;
     document.getElementById("detail-details").textContent = log.content.details || "—";
-
-    document.getElementById("detail-link").href = log.links?.linkToSystem || "#";
 
     const ownerInfo = log.owner?.ownerMail
         ? `${log.owner.ownerType} (${log.owner.ownerMail})`
@@ -75,40 +88,21 @@ function selectLog(id) {
     if (activeEl) activeEl.classList.add("active");
 }
 
-// ---------------------------------------
-// EKSEMPEL: Kørsel med JSON (kan fjernes)
-// ---------------------------------------
-const demoJSON = [
-    {
-        "logId": "LOG-1",
-        "customerId": "CUST-1",
-        "sourceSystem": "Egis",
-        "timestamp": 1730812800,
-        "type": "contractChange",
-        "channel": "portal",
-        "productArea": "el",
-        "content": {
-            "summary": "Kunde skiftede abonnement",
-            "details": "Aftale ændret via kundeportal"
-        },
-        "links": { "linkToSystem": "https://crm.ok.dk/1" },
-        "owner": { "ownerType": "mobilitet", "ownerMail": "xx@ok.dk" }
-    },
-    {
-        "logId": "LOG-2",
-        "customerId": "CUST-2",
-        "sourceSystem": "Miralix",
-        "timestamp": 1730550000,
-        "type": "phoneCall",
-        "channel": "telefon",
-        "productArea": "vask",
-        "content": {
-            "summary": "Indgående opkald",
-            "details": "Kunden ringede ind vedr. vaskemaskine"
-        },
-        "links": { "linkToSystem": "https://crm.ok.dk/2" },
-        "owner": { "ownerType": "kundeservice", "ownerMail": "yy@ok.dk" }
+async function init() {
+    try {
+        const response = await fetch("logs.json");
+        if (!response.ok) {
+            throw new Error(`Kunne ikke indlæse logs.json (status ${response.status})`);
+        }
+        const data = await response.json();
+        loadLogData(data);
+    } catch (error) {
+        console.error(error);
     }
-];
+}
 
-loadLogData(demoJSON);
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+} else {
+    init();
+}
