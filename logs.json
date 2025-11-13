@@ -1,0 +1,32 @@
+[
+    {
+        "logId": "LOG-1",
+        "customerId": "CUST-1",
+        "sourceSystem": "Egis",
+        "timestamp": 1730812800,
+        "type": "contractChange",
+        "channel": "portal",
+        "productArea": "el",
+        "content": {
+            "summary": "Kunde skiftede abonnement",
+            "details": "Aftale ændret via kundeportal"
+        },
+        "links": { "linkToSystem": "https://crm.ok.dk/1" },
+        "owner": { "ownerType": "mobilitet", "ownerMail": "xx@ok.dk" }
+    },
+    {
+        "logId": "LOG-2",
+        "customerId": "CUST-2",
+        "sourceSystem": "Miralix",
+        "timestamp": 1730550000,
+        "type": "phoneCall",
+        "channel": "telefon",
+        "productArea": "vask",
+        "content": {
+            "summary": "Indgående opkald",
+            "details": "Kunden ringede ind vedr. vaskemaskine"
+        },
+        "links": { "linkToSystem": "https://crm.ok.dk/2" },
+        "owner": { "ownerType": "kundeservice", "ownerMail": "yy@ok.dk" }
+    }
+]
